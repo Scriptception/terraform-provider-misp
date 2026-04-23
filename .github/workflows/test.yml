@@ -45,11 +45,14 @@ jobs:
         with:
           terraform_version: '1.9.*'
           terraform_wrapper: false
-      - run: cd tools && go generate ./...
+      # tools/tools.go has a //go:build tools tag so `go generate ./...` finds
+      # no packages. Invoke tfplugindocs directly instead — this mirrors what
+      # `make generate` does locally.
+      - run: cd tools && go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate --provider-name misp --provider-dir ..
       - name: git diff
         run: |
           git diff --compact-summary --exit-code || \
-            (echo; echo "Unexpected difference in directories after code generation. Run 'make generate' command and commit."; exit 1)
+            (echo; echo "Docs are out of date. Run 'make generate' and commit the result."; exit 1)
 
   test:
     name: Unit tests

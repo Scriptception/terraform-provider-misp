@@ -38,11 +38,13 @@ func New(version string) func() provider.Provider {
 	}
 }
 
+// Metadata returns the provider type name ("misp") and its build version.
 func (p *MISPProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "misp"
 	resp.Version = p.version
 }
 
+// Schema defines the provider-block configuration schema.
 func (p *MISPProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Manage a MISP (Malware Information Sharing Platform) instance as code.",
@@ -64,6 +66,8 @@ func (p *MISPProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp 
 	}
 }
 
+// Configure builds the MISP client from provider config (or MISP_* env vars)
+// and stashes it on the response so resources and data sources can reach it.
 func (p *MISPProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	var data MISPProviderModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
@@ -114,6 +118,7 @@ func (p *MISPProvider) Configure(ctx context.Context, req provider.ConfigureRequ
 	resp.ResourceData = c
 }
 
+// Resources returns the set of resources the provider supports.
 func (p *MISPProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewOrganisationResource,
@@ -133,6 +138,7 @@ func (p *MISPProvider) Resources(_ context.Context) []func() resource.Resource {
 	}
 }
 
+// DataSources returns the set of data sources the provider supports.
 func (p *MISPProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewOrganisationDataSource,
@@ -150,6 +156,7 @@ func (p *MISPProvider) DataSources(_ context.Context) []func() datasource.DataSo
 	}
 }
 
+// Functions returns provider-defined functions; none are defined yet.
 func (p *MISPProvider) Functions(_ context.Context) []func() function.Function {
 	return nil
 }

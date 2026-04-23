@@ -197,7 +197,7 @@ func TestGetSetting_decodesFlatResponse(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			c, stop := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			c, stop := newTestServer(t, func(w http.ResponseWriter, _ *http.Request) {
 				_, _ = w.Write([]byte(tc.body))
 			})
 			defer stop()

@@ -514,7 +514,7 @@ func elementsFromList(ctx context.Context, list types.List) ([]client.GalaxyElem
 }
 
 // elementsToList builds a types.List of nested objects from []client.GalaxyElement.
-func elementsToList(ctx context.Context, elements []client.GalaxyElement) (types.List, diag.Diagnostics) {
+func elementsToList(_ context.Context, elements []client.GalaxyElement) (types.List, diag.Diagnostics) {
 	elemType := types.ObjectType{AttrTypes: elementAttrTypes}
 
 	if len(elements) == 0 {
