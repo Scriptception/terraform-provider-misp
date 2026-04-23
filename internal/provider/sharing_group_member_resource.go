@@ -2,12 +2,10 @@ package provider
 
 // misp_sharing_group_member — junction resource linking an organisation to a sharing group.
 //
-// v0.2 limitations:
-//   - The `extend` flag (allows a member org to re-share the SG) is not exposed as an
-//     attribute. The MISP addOrg endpoint does not accept it at creation time, and
-//     patching it post-creation via /sharing_groups/edit requires a complex envelope.
-//     Use the MISP UI to toggle extend=true on individual memberships until a future
-//     release adds support.
+// Known limitation: the `extend` flag (allows a member org to re-share the SG) is not
+// exposed as an attribute. The MISP addOrg endpoint does not accept it at creation
+// time, and patching it post-creation via /sharing_groups/edit requires a complex
+// envelope. Use the MISP UI to toggle extend=true on individual memberships.
 
 import (
 	"context"
@@ -53,7 +51,7 @@ func (r *sharingGroupMemberResource) Schema(_ context.Context, _ resource.Schema
 	resp.Schema = schema.Schema{
 		Description: "Adds an organisation as a member of a MISP sharing group. " +
 			"All attributes require replacement — destroying and re-creating is the only way to change membership. " +
-			"The `extend` flag is not supported in v0.2; use the MISP UI to set it.",
+			"The `extend` flag is not supported; use the MISP UI to set it.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "Composite identifier in the form `<sharing_group_id>:<organisation_id>`. " +

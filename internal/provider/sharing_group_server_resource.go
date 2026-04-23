@@ -2,12 +2,11 @@ package provider
 
 // misp_sharing_group_server — junction resource linking a remote MISP server to a sharing group.
 //
-// v0.4 limitations:
+// Known limitations:
 //   - The `all_orgs` flag (include every organisation known to the remote server in the
 //     sharing group) is not exposed as an attribute. The addServer endpoint does not accept
 //     it at creation time, and updating it post-creation requires patching the parent SG
-//     with a full SharingGroupServer array — too complex for v0.4. Use the MISP UI to
-//     toggle all_orgs on individual server entries until a future release adds support.
+//     with a full SharingGroupServer array. Use the MISP UI to toggle all_orgs.
 //   - server_id="0" is MISP's reserved "this instance" entry, auto-managed by MISP when
 //     the sharing group is created. Attempting to manage it via Terraform is rejected.
 
@@ -55,7 +54,7 @@ func (r *sharingGroupServerResource) Schema(_ context.Context, _ resource.Schema
 	resp.Schema = schema.Schema{
 		Description: "Adds a remote MISP server to a sharing group. " +
 			"All attributes require replacement — destroying and re-creating is the only way to change membership. " +
-			"The `all_orgs` flag is not supported in v0.4; use the MISP UI to set it. " +
+			"The `all_orgs` flag is not supported; use the MISP UI to set it. " +
 			"server_id=\"0\" (MISP's auto-managed local-instance entry) is reserved and cannot be managed via Terraform.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{

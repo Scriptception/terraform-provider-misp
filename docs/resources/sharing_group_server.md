@@ -3,12 +3,12 @@
 page_title: "misp_sharing_group_server Resource - misp"
 subcategory: ""
 description: |-
-  Adds a remote MISP server to a sharing group. All attributes require replacement — destroying and re-creating is the only way to change membership. The all_orgs flag is not supported in v0.4; use the MISP UI to set it. server_id="0" (MISP's auto-managed local-instance entry) is reserved and cannot be managed via Terraform.
+  Adds a remote MISP server to a sharing group. All attributes require replacement — destroying and re-creating is the only way to change membership. The all_orgs flag is not supported; use the MISP UI to set it. server_id="0" (MISP's auto-managed local-instance entry) is reserved and cannot be managed via Terraform.
 ---
 
 # misp_sharing_group_server (Resource)
 
-Adds a remote MISP server to a sharing group. All attributes require replacement — destroying and re-creating is the only way to change membership. The `all_orgs` flag is not supported in v0.4; use the MISP UI to set it. server_id="0" (MISP's auto-managed local-instance entry) is reserved and cannot be managed via Terraform.
+Adds a remote MISP server to a sharing group. All attributes require replacement — destroying and re-creating is the only way to change membership. The `all_orgs` flag is not supported; use the MISP UI to set it. server_id="0" (MISP's auto-managed local-instance entry) is reserved and cannot be managed via Terraform.
 
 ## Example Usage
 

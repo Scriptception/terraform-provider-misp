@@ -3,12 +3,12 @@
 page_title: "misp_sharing_group_member Resource - misp"
 subcategory: ""
 description: |-
-  Adds an organisation as a member of a MISP sharing group. All attributes require replacement — destroying and re-creating is the only way to change membership. The extend flag is not supported in v0.2; use the MISP UI to set it.
+  Adds an organisation as a member of a MISP sharing group. All attributes require replacement — destroying and re-creating is the only way to change membership. The extend flag is not supported; use the MISP UI to set it.
 ---
 
 # misp_sharing_group_member (Resource)
 
-Adds an organisation as a member of a MISP sharing group. All attributes require replacement — destroying and re-creating is the only way to change membership. The `extend` flag is not supported in v0.2; use the MISP UI to set it.
+Adds an organisation as a member of a MISP sharing group. All attributes require replacement — destroying and re-creating is the only way to change membership. The `extend` flag is not supported; use the MISP UI to set it.
 
 ## Example Usage
 

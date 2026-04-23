@@ -65,12 +65,6 @@ being used.
   Parse the response, detect redirects, return a "looks like your API key
   is wrong" hint.
 
-- **Bootstrap-module example.** A standalone `examples/modules/bootstrap/`
-  that takes a handful of variables (org name, admin email, taxonomies to
-  enable) and produces a clean-MISP baseline. Much more useful for onboarding
-  than the piecemeal `examples/resources/` content. The `local-test/`
-  directory is a close cousin but it's gitignored.
-
 - **Richer `_list` data sources.** `data.misp_organisations` (plural) for
   iteration, `data.misp_feeds`, etc. — lets consumers loop over existing
   resources instead of hardcoding ids.

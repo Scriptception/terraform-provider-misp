@@ -2,7 +2,7 @@ package client
 
 // Package client — Server methods.
 //
-// # Future work (deferred for v0.2)
+// # Deferred fields
 //
 //   - pull_rules / push_rules: stringified JSON blobs; need special
 //     handling to round-trip through Terraform without spurious diffs.

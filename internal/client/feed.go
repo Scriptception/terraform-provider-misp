@@ -5,8 +5,8 @@ import (
 	"fmt"
 )
 
-// Feed mirrors MISP's Feed object (core fields only; operational fields such
-// as event_id, settings, and cache_timestamp are excluded from v0.2).
+// Feed mirrors MISP's Feed object. Core fields only — operational fields such
+// as event_id, settings, and cache_timestamp are intentionally excluded.
 type Feed struct {
 	ID             string `json:"id,omitempty"`
 	Name           string `json:"name"`

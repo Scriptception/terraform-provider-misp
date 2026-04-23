@@ -1,6 +1,6 @@
 package provider
 
-// # Future work (deferred for v0.2)
+// # Deferred fields
 //
 // The following Server fields are intentionally omitted from this resource:
 //   - push_rules / pull_rules: stringified JSON blobs that require special
