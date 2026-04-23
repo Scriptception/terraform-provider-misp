@@ -1,0 +1,33 @@
+# Binaries
+terraform-provider-misp
+terraform-provider-misp_v*
+dist/
+
+# Go
+*.test
+*.out
+vendor/
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Local scratch dir for manual Terraform experimentation (see local-test/README.md).
+# Everything in here stays on disk — never committed.
+/local-test/
