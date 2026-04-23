@@ -44,11 +44,15 @@ checksum:
 
 signs:
   - artifacts: checksum
+    cmd: gpg
+    stdin: '{{ .Env.GPG_PASSPHRASE }}'
     args:
       - "--batch"
       - "--no-tty"
       - "--pinentry-mode"
       - "loopback"
+      - "--passphrase-fd"
+      - "0"
       - "--local-user"
       - "{{ .Env.GPG_FINGERPRINT }}"
       - "--output"
