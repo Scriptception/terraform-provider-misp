@@ -4,6 +4,21 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-04-24
+
+### Documentation
+
+- **Stop demoing hardcoded `authkey` values.** The `misp_server` and `misp_sharing_group_server` example `.tf` files showed `authkey = "0123456789abcdef..."` as a literal string. The schema correctly marks `authkey` as `Sensitive` so it never leaks into plan/apply output, but the example was teaching users to hardcode secrets in source control. Switched to the `var.peer_authkey` pattern with `sensitive = true` and an inline comment listing safe sources (env vars, `-var`, `*.tfvars` out of git, secrets backends).
+- Added an **Authentication & secret handling** section to the README covering the same guidance at the top level.
+
+### Fixed
+
+- `make generate` was a silent no-op: `cd tools && go generate ./...` matched zero packages because `tools/tools.go` has a `//go:build tools` constraint. Now invokes `tfplugindocs` directly, matching what CI already does.
+
+### Notes
+
+- No schema changes, no behavioural changes, no breaking changes. v0.1.0 remains functionally identical and stays on the Registry; v0.1.1 supersedes it as the recommended version. If you pinned `~> 0.1`, your next `terraform init` will pick up v0.1.1 automatically.
+
 ## [0.1.0] - 2026-04-23
 
 Initial release.
