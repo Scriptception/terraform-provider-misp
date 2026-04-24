@@ -132,11 +132,18 @@ Full reference docs live under [`docs/`](./docs) and on the Terraform Registry o
 
 Every resource except `misp_sharing_group_member` and `misp_sharing_group_server` also exposes a matching data source (`data.misp_<name>`) for referencing existing records.
 
-## Authentication
+## Authentication & secret handling
 
 Create an API key in MISP: **Administration → List Auth Keys → Add authentication key**. Give it admin scope (required for most resources). Export it as `MISP_API_KEY` or pass it via the `api_key` attribute.
 
-The API key is marked `Sensitive` in provider schema, so Terraform will not print it in plan/apply output.
+All secret-shaped attributes are marked `Sensitive` in the provider schema (`provider.api_key`, `misp_server.authkey`), so Terraform never prints them in plan/apply output. **Don't hardcode them in `.tf` files** — supply via:
+
+- environment variables (`TF_VAR_peer_authkey=…`, `MISP_API_KEY=…`)
+- `terraform apply -var "..."`
+- `*.tfvars` files kept out of git
+- a secrets backend such as [HashiCorp Vault](https://developer.hashicorp.com/terraform/tutorials/secrets/secrets-vault), [SOPS](https://github.com/getsops/sops), [Doppler](https://docs.doppler.com/docs/terraform), or [1Password](https://developer.1password.com/docs/terraform)
+
+Resource examples in `examples/resources/` use `variable "..." { sensitive = true }` to demonstrate the right pattern.
 
 ## Development
 
