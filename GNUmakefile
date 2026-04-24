@@ -10,7 +10,7 @@ lint:
 	golangci-lint run
 
 generate:
-	cd tools && go generate ./...
+	cd tools && go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate --provider-name misp --provider-dir ..
 
 fmt:
 	gofmt -s -w -e .
