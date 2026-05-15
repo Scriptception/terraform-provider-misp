@@ -6,27 +6,29 @@ import (
 )
 
 // Feed mirrors MISP's Feed object. Core fields only — operational fields such
-// as event_id, settings, and cache_timestamp are intentionally excluded.
+// as settings and cache_timestamp are intentionally excluded.
 type Feed struct {
-	ID             string `json:"id,omitempty"`
-	Name           string `json:"name"`
-	Provider       string `json:"provider"`
-	URL            string `json:"url"`
-	SourceFormat   string `json:"source_format,omitempty"`
-	Enabled        bool   `json:"enabled"`
-	Distribution   string `json:"distribution,omitempty"`
-	SharingGroupID string `json:"sharing_group_id,omitempty"`
-	TagID          string `json:"tag_id,omitempty"`
-	OrgcID         string `json:"orgc_id,omitempty"`
-	FixedEvent     bool   `json:"fixed_event"`
-	DeltaMerge     bool   `json:"delta_merge"`
-	Publish        bool   `json:"publish"`
-	OverrideIDs    bool   `json:"override_ids"`
-	CachingEnabled bool   `json:"caching_enabled"`
-	ForceToIDs     bool   `json:"force_to_ids"`
-	LookupVisible  bool   `json:"lookup_visible"`
-	InputSource    string `json:"input_source,omitempty"`
-	Rules          string `json:"rules,omitempty"`
+	ID             string     `json:"id,omitempty"`
+	Name           string     `json:"name"`
+	Provider       string     `json:"provider"`
+	URL            string     `json:"url"`
+	SourceFormat   string     `json:"source_format,omitempty"`
+	Enabled        bool       `json:"enabled"`
+	Distribution   string     `json:"distribution,omitempty"`
+	SharingGroupID string     `json:"sharing_group_id,omitempty"`
+	TagID          string     `json:"tag_id,omitempty"`
+	OrgcID         string     `json:"orgc_id,omitempty"`
+	FixedEvent     bool       `json:"fixed_event"`
+	EventID        FlexString `json:"event_id,omitempty"`
+	TargetEvent    FlexString `json:"target_event,omitempty"`
+	DeltaMerge     bool       `json:"delta_merge"`
+	Publish        bool       `json:"publish"`
+	OverrideIDs    bool       `json:"override_ids"`
+	CachingEnabled bool       `json:"caching_enabled"`
+	ForceToIDs     bool       `json:"force_to_ids"`
+	LookupVisible  bool       `json:"lookup_visible"`
+	InputSource    string     `json:"input_source,omitempty"`
+	Rules          string     `json:"rules,omitempty"`
 }
 
 type feedEnvelope struct {

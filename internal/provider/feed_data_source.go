@@ -43,6 +43,7 @@ func (d *feedDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			"tag_id":           schema.StringAttribute{Computed: true},
 			"orgc_id":          schema.StringAttribute{Computed: true},
 			"fixed_event":      schema.BoolAttribute{Computed: true},
+			"event_id":         schema.StringAttribute{Computed: true},
 			"delta_merge":      schema.BoolAttribute{Computed: true},
 			"publish":          schema.BoolAttribute{Computed: true},
 			"override_ids":     schema.BoolAttribute{Computed: true},

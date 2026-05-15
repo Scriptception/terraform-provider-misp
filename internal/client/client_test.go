@@ -126,6 +126,53 @@ func TestCreateTag_decodesEnvelope(t *testing.T) {
 	}
 }
 
+func TestCreateFeed_sendsEventIDAndTargetEvent(t *testing.T) {
+	c, stop := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			t.Errorf("method = %q, want POST", r.Method)
+		}
+		if r.URL.Path != "/feeds/add" {
+			t.Errorf("path = %q, want /feeds/add", r.URL.Path)
+		}
+		var body feedEnvelope
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			t.Errorf("decode request body: %v", err)
+		}
+		if got := body.Feed.EventID.String(); got != "123" {
+			t.Errorf("event_id = %q, want 123", got)
+		}
+		if got := body.Feed.TargetEvent.String(); got != "123" {
+			t.Errorf("target_event = %q, want 123", got)
+		}
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"Feed": map[string]any{
+				"id":          "7",
+				"name":        "feed",
+				"provider":    "provider",
+				"url":         "https://example.com/feed.json",
+				"fixed_event": true,
+				"event_id":    123,
+			},
+		})
+	})
+	defer stop()
+
+	got, err := c.CreateFeed(context.Background(), Feed{
+		Name:        "feed",
+		Provider:    "provider",
+		URL:         "https://example.com/feed.json",
+		FixedEvent:  true,
+		EventID:     FlexString("123"),
+		TargetEvent: FlexString("123"),
+	})
+	if err != nil {
+		t.Fatalf("CreateFeed: %v", err)
+	}
+	if got.ID != "7" || got.EventID.String() != "123" {
+		t.Errorf("unexpected feed: %+v", got)
+	}
+}
+
 // TestFlexString_unmarshal covers all three JSON shapes FlexString must accept:
 // quoted strings, bare numbers, and JSON booleans.
 func TestFlexString_unmarshal(t *testing.T) {

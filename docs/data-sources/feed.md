@@ -31,6 +31,7 @@ data "misp_feed" "example" {
 - `delta_merge` (Boolean)
 - `distribution` (String)
 - `enabled` (Boolean)
+- `event_id` (String)
 - `fixed_event` (Boolean)
 - `force_to_ids` (Boolean)
 - `input_source` (String)

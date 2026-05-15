@@ -3,12 +3,15 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strconv"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/Scriptception/terraform-provider-misp/internal/client"
@@ -41,6 +44,7 @@ type feedResourceModel struct {
 	TagID          types.String `tfsdk:"tag_id"`
 	OrgcID         types.String `tfsdk:"orgc_id"`
 	FixedEvent     types.Bool   `tfsdk:"fixed_event"`
+	EventID        types.String `tfsdk:"event_id"`
 	DeltaMerge     types.Bool   `tfsdk:"delta_merge"`
 	Publish        types.Bool   `tfsdk:"publish"`
 	OverrideIDs    types.Bool   `tfsdk:"override_ids"`
@@ -113,6 +117,14 @@ func (r *feedResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				Computed:    true,
 			},
+			"event_id": schema.StringAttribute{
+				Description: "Target MISP event id used when `fixed_event` is true. If omitted, MISP may assign the fixed event after the feed is fetched.",
+				Optional:    true,
+				Computed:    true,
+				Validators: []validator.String{
+					positiveIntegerStringValidator{field: "event_id"},
+				},
+			},
 			"delta_merge": schema.BoolAttribute{
 				Description: "When true, attributes removed from the feed are also removed from MISP.",
 				Optional:    true,
@@ -175,6 +187,9 @@ func (r *feedResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	if !validateFeedEventIDConfig(plan, &resp.Diagnostics) {
+		return
+	}
 	created, err := r.client.CreateFeed(ctx, feedFromModel(plan))
 	if err != nil {
 		resp.Diagnostics.AddError("Creating MISP feed failed", err.Error())
@@ -212,6 +227,9 @@ func (r *feedResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	if !validateFeedEventIDConfig(plan, &resp.Diagnostics) {
+		return
+	}
 	updated, err := r.client.UpdateFeed(ctx, state.ID.ValueString(), feedFromModel(plan))
 	if err != nil {
 		resp.Diagnostics.AddError("Updating MISP feed failed", err.Error())
@@ -236,7 +254,7 @@ func (r *feedResource) ImportState(ctx context.Context, req resource.ImportState
 }
 
 func feedFromModel(m feedResourceModel) client.Feed {
-	return client.Feed{
+	f := client.Feed{
 		Name:           m.Name.ValueString(),
 		Provider:       m.Provider.ValueString(),
 		URL:            m.URL.ValueString(),
@@ -256,6 +274,11 @@ func feedFromModel(m feedResourceModel) client.Feed {
 		InputSource:    m.InputSource.ValueString(),
 		Rules:          m.Rules.ValueString(),
 	}
+	if m.FixedEvent.ValueBool() && !m.EventID.IsNull() && !m.EventID.IsUnknown() && m.EventID.ValueString() != "" {
+		f.EventID = client.FlexString(m.EventID.ValueString())
+		f.TargetEvent = client.FlexString(m.EventID.ValueString())
+	}
+	return f
 }
 
 func feedToModel(f *client.Feed) feedResourceModel {
@@ -280,5 +303,55 @@ func feedToModel(f *client.Feed) feedResourceModel {
 		InputSource:    types.StringValue(f.InputSource),
 	}
 	m.Rules = stringOrNull(f.Rules)
+	m.EventID = eventIDOrNull(f.EventID.String())
 	return m
+}
+
+func validateFeedEventIDConfig(m feedResourceModel, diags *diag.Diagnostics) bool {
+	if m.EventID.IsNull() || m.EventID.IsUnknown() || m.EventID.ValueString() == "" {
+		return true
+	}
+	if m.FixedEvent.IsNull() || m.FixedEvent.IsUnknown() || !m.FixedEvent.ValueBool() {
+		diags.AddAttributeError(
+			path.Root("event_id"),
+			"Invalid event_id configuration",
+			"`event_id` can only be configured when `fixed_event` is explicitly set to true.",
+		)
+		return false
+	}
+	return true
+}
+
+func eventIDOrNull(s string) types.String {
+	if s == "" || s == "0" {
+		return types.StringNull()
+	}
+	return types.StringValue(s)
+}
+
+type positiveIntegerStringValidator struct {
+	field string
+}
+
+func (v positiveIntegerStringValidator) Description(_ context.Context) string {
+	return "must be a positive integer"
+}
+
+func (v positiveIntegerStringValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (v positiveIntegerStringValidator) ValidateString(_ context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+	val := req.ConfigValue.ValueString()
+	parsed, err := strconv.ParseInt(val, 10, 64)
+	if err != nil || parsed <= 0 {
+		resp.Diagnostics.AddAttributeError(
+			req.Path,
+			"Invalid "+v.field+" value",
+			fmt.Sprintf("%s must be a positive integer; got %q", v.field, val),
+		)
+	}
 }

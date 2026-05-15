@@ -39,6 +39,7 @@ resource "misp_feed" "example" {
 - `delta_merge` (Boolean) When true, attributes removed from the feed are also removed from MISP.
 - `distribution` (String) Distribution level (`0`=org only, `1`=community, `2`=connected, `3`=all).
 - `enabled` (Boolean) Whether the feed is active and will be fetched on schedule.
+- `event_id` (String) Target MISP event id used when `fixed_event` is true. If omitted, MISP may assign the fixed event after the feed is fetched.
 - `fixed_event` (Boolean) When true, all feed data is merged into a single fixed event instead of creating new events.
 - `force_to_ids` (Boolean) Force all imported attributes to be marked as IDS signatures.
 - `input_source` (String) Source type: `network` (fetched over HTTP/S) or `local` (local file path).
